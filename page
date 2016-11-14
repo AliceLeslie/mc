@@ -1,0 +1,226 @@
+/*页面数据加载*/
+function loadPage(url){
+   $('.tbrongqi').empty();
+  $.ajax({
+    cache : false,
+    url : url,
+    type : "get",
+    async:false,
+            success: function(data){
+                  /*将得到的json字符串转成json对象*/
+                 var details=JSON.parse(data);
+                /*数据总条数*/
+                 var nums=details.ch.length;
+                   console.log(details);
+                 /*计算总页数*/
+                  var pageTotal=nums/10;
+                  var pageNumber=Math.ceil(pageTotal);
+                  /*展示展示总页数*/
+                   $('#totalPage').html(pageNumber);
+                    /*创建分页容器*/
+                    for(var i=0;i<pageNumber;i++){
+                       var div = $("<tbody class='tbrongqi'></tbody>")
+                       $('.table_style').append(div);
+
+                    }
+                    /*预处理条数,当前页数假象*/
+                    var nowNum=0;
+                    if(nums>10){
+                      nowNum=10;
+                    }else{
+                      nowNum=nums;
+                    }
+                    $('#nowNum').html(nowNum);
+                    $('.current-page').val('1');
+                  
+                    /*分容器载入内容*/
+                   for(k=0;k<pageNumber;k++){
+                         // 计算每页数量
+                          var spe=nums-k*10;
+                          /*每次重新声明原始字符串*/
+                          var html='';
+                           console.log(spe);
+                          if(spe>10){
+                               var xuins=0;
+                               for(var i=0;i<10;i++){
+                                  // 自然序号生成
+                                  xuins+=1;
+                                  //倒序显示初始记号
+                                        var b=nums-i-1-k*10;
+                                      /*获取对应序列的值*/
+                                         var ids=details.ch[b].rylbid;
+                                        var mcs=details.ch[b].rylbmc;
+                                         var ztais=details.ch[b].rylbzt;
+                                         //封装值
+                                           if(ztais=='禁止'||ztais=='2'){
+                                              html +=  '<tr>'+
+                                                      '<td class="tbody_check">'+
+                                                        '<span class="check check1">'+
+                                                             '<input id="checkbox" class="hidden" type="checkbox"  value="checkbox" name="checkbox">'+
+                                                        '</span>'+
+                                                    '</td>'+
+                                                      '<td style="display:none;" class="gwids">'+ids+'</td>'+
+                                                    '<td>'+xuins+'</td>'+
+                                                      '<td>'+
+                                                       '<a href="javascript:void(0)" class="zhiw">'+mcs+'</a>'+
+                                                     '</td>'+
+                                                     '<td>'+'<a href="javascript:;" class="ban status">'+'禁止'+'</a>'+'</td>'+
+                                                      '<td>'+'<a href="javascript:;" class="cbtn">'+'修改'+'</a>'+'</td>'+
+                                                   '</tr>'
+                                            }else if(ztais=="允许"||ztais=="1"){
+                                             html +=  '<tr>'+
+                                                    '<td class="tbody_check">'+
+                                                      '<span class="check check1">'+
+                                                           '<input id="checkbox" class="hidden" type="checkbox"  value="checkbox" name="checkbox">'+
+                                                      '</span>'+
+                                                  '</td>'+
+                                                    '<td style="display:none;" class="gwids">'+ids+'</td>'+
+                                                  '<td>'+xuins+'</td>'+
+                                                    '<td>'+
+                                                     '<a href="javascript:void(0)" class="zhiw">'+mcs+'</a>'+
+                                                   '</td>'+
+                                                   '<td>'+'<a href="javascript:;" class="allow status">'+'允许'+'</a>'+'</td>'+
+                                                    '<td>'+'<a href="javascript:;" class="cbtn">'+'修改'+'</a>'+'</td>'+
+                                                 '</tr>'
+                                            }
+                               } 
+                          }else{
+                              /*序号生成*/
+                              var xus=0;
+                              for(i=0;i<spe;i++){
+                                         // 自然序号生成
+                                           xus+=1;
+                                           var b=nums-i-1-k*10;
+                                         /*获取对应序列的值*/
+                                          var ids=details.ch[b].rylbid;
+                                         var mcs=details.ch[b].rylbmc;
+                                          var ztais=details.ch[b].rylbzt;
+                                         //封装值
+                                           if(ztais=='禁止'||ztais=='2'){
+                                              html +=  '<tr>'+
+                                                      '<td class="tbody_check">'+
+                                                        '<span class="check check1">'+
+                                                             '<input id="checkbox" class="hidden" type="checkbox"  value="checkbox" name="checkbox">'+
+                                                        '</span>'+
+                                                    '</td>'+
+                                                      '<td style="display:none;" class="gwids">'+ids+'</td>'+
+                                                    '<td>'+xus+'</td>'+
+                                                      '<td>'+
+                                                       '<a href="javascript:void(0)" class="zhiw">'+mcs+'</a>'+
+                                                     '</td>'+
+                                                     '<td>'+'<a href="javascript:;" class="ban status">'+'禁止'+'</a>'+'</td>'+
+                                                      '<td>'+'<a href="javascript:;" class="cbtn">'+'修改'+'</a>'+'</td>'+
+                                                   '</tr>'
+                                            }else if(ztais=="允许"||ztais=="1"){
+                                             html +=  '<tr>'+
+                                                    '<td class="tbody_check">'+
+                                                      '<span class="check check1">'+
+                                                           '<input id="checkbox" class="hidden" type="checkbox"  value="checkbox" name="checkbox">'+
+                                                      '</span>'+
+                                                  '</td>'+
+                                                    '<td style="display:none;" class="gwids">'+ids+'</td>'+
+                                                  '<td>'+xus+'</td>'+
+                                                    '<td>'+
+                                                     '<a href="javascript:void(0)" class="zhiw">'+mcs+'</a>'+
+                                                   '</td>'+
+                                                   '<td>'+'<a href="javascript:;" class="allow status">'+'允许'+'</a>'+'</td>'+
+                                                    '<td>'+'<a href="javascript:;" class="cbtn">'+'修改'+'</a>'+'</td>'+
+                                                 '</tr>'
+                                            }
+
+                              }
+                          }
+                       console.log(html);
+                       $('.tbrongqi:eq('+k+')').html(html);
+                      // 这里选择容器加入某个容器
+                   }
+       
+      
+            }
+    });
+}
+$(function(){
+     loadPage(url);
+     //There write your url of ajax ;
+})
+/*分页方法*/
+   //对应的在分页a按钮上加上onclick 事件;
+// 首页显示
+function firstPage(){
+    $('.tbrongqi').hide();
+    $('.tbrongqi:eq(0)').show();
+    // 显示当页条数
+    var nowNum=$('.tbrongqi:eq(0) tr').length;
+    $('#nowNum').html(nowNum);
+    /*回到首页,当前页数回归*/
+    $('.current-page').val('1');
+}
+//尾页显示
+function lastPage(){
+   $('.tbrongqi').hide();
+   $(".tbrongqi:last").show();
+   // 显示当页条数
+   var nowNum=$('.tbrongqi:last tr').length;
+    $('#nowNum').html(nowNum);
+    // 来到尾页,当前页数到末
+    $('.current-page').val($('#totalPage').html());
+}
+//下一页
+function nextPage(){
+  // 获取显示元素的索引值
+   var $showRo=$('.tbrongqi:visible');
+   var indexCla=$showRo.index();
+  // 元素选择序号  
+    var inb=$('#totalPage').html();
+  var k=indexCla;
+  var ck=k+1;
+  /*当没有下一页数据时分情况讨论*/
+   if(k<inb){
+    $('.tbrongqi').hide();
+    $('.tbrongqi:eq('+k+')').show();
+       // 塞入当前条数
+        var nowNum=$('.tbrongqi:eq('+k+') tr').length;
+       $('#nowNum').html(nowNum);
+       //塞入当前页数
+      $('.current-page').val(ck);
+   }else{
+    alert('已浏览到尾页')
+   }
+
+}
+// 上一页
+function  beforePage(){
+  var $showRos=$('.tbrongqi:visible');
+  var index=$showRos.index();
+  var k=index;
+  if(k>1){
+       // 页数序号
+       var pagek=k-1;
+       /*元素序号*/
+       var nk=k-2;
+       $('.tbrongqi').hide();
+          $('.tbrongqi:eq('+nk+')').show();
+        var nowNum=$('.tbrongqi:eq('+nk+') tr').length;
+         $('#nowNum').html(nowNum);
+           $('.current-page').val(pagek);
+  }else{
+    alert('当前页是首页')
+  }
+}
+// 跳转页面
+function goPage(){
+  var inpage=$('.current-page').val();
+  var inb=$('#totalPage').html();
+  if(inpage>inb){
+    alert('输入页数据不存在')
+  }else{
+
+    var k=inpage-1;
+    $('.tbrongqi').hide();
+    $('.tbrongqi:eq('+k+')').show();
+    var nowNum=$('.tbrongqi:eq('+k+') tr').length;
+    $('#nowNum').html(nowNum);
+    // 来到尾页,当前页数到末
+    $('.current-page').val(inpage);
+  }
+}
